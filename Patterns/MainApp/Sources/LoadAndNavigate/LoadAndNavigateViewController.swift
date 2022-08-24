@@ -11,7 +11,7 @@ import Cartography
 import ComposableArchitecture
 import Combine
 
-public class LoadAndNavigateViewController: StoreViewController<LoadAndNavigateState, LoadAndNavigateAction> {
+public class LoadAndNavigateViewController: StoreViewController<LoadAndNavigate.State, LoadAndNavigate.Action> {
 
   lazy var button = UIButton()
 
@@ -43,7 +43,7 @@ public class LoadAndNavigateViewController: StoreViewController<LoadAndNavigateS
       .store(in: &cancellables)
 
     pushViewController(store: store.scope(state: \.loaded,
-                                          action: LoadAndNavigateAction.loaded),
+                                          action: LoadAndNavigate.Action.loaded),
                        type: LoadedViewController.self,
                        dismissAction: .didCloseLoaded)
   }

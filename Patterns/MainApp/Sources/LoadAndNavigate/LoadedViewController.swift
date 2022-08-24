@@ -8,7 +8,7 @@
 import UIKit
 import Common
 
-class LoadedViewController: StoreViewController<LoadedState, LoadedAction> {
+class LoadedViewController: StoreViewController<Loaded.State, Loaded.Action> {
 
   override func configureSubviews() {
     title = "Loaded"

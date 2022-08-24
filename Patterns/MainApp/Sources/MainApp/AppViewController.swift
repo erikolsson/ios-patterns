@@ -14,7 +14,7 @@ import NavigateAndLoad
 import Downloads
 import Form
 
-public class AppViewController: StoreViewController<AppState, AppAction> {
+public class AppViewController: StoreViewController<App.State, App.Action> {
 
   let collectionView = UICollectionView(frame: .zero,
                                         collectionViewLayout: AppViewController.collectionViewLayout())
@@ -54,22 +54,17 @@ extension AppViewController: UICollectionViewDelegate {
     switch identifier {
     case .loadAndNavigate:
       let vc = LoadAndNavigateViewController(store: store.scope(state: \.loadAndNavigate,
-                                                                action: AppAction.loadAndNavigate))
-      navigationController?.pushViewController(vc, animated: true)
-
-    case .navigateAndLoad:
-      let vc = NavigateAndLoadViewController(store: store.scope(state: \.navigateAndLoad,
-                                                                action: AppAction.navigateAndLoad))
+                                                                action: App.Action.loadAndNavigate))
       navigationController?.pushViewController(vc, animated: true)
 
     case .cellStates:
-      let vc = DownloadsViewController(store: store.scope(state: \.cells,
-                                                      action: AppAction.downloads))
+      let vc = DownloadsViewController(store: store.scope(state: \.downloads,
+                                                          action: App.Action.downloads))
       navigationController?.pushViewController(vc, animated: true)
 
     case .form:
       let vc = FormViewController(store: store.scope(state: \.form,
-                                                     action: AppAction.form))
+                                                     action: App.Action.form))
       navigationController?.pushViewController(vc, animated: true)
     }
   }

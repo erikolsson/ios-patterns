@@ -7,55 +7,51 @@
 
 import ComposableArchitecture
 
-public struct LoadAndNavigateState: Equatable {
-  var isLoading = false
-  var loaded: LoadedState?
-  public init() {}
-}
-
-public enum LoadAndNavigateAction: Equatable {
-  case buttonPressed
-  case loadingCompleted
-  case didCloseLoaded
-  case loaded(LoadedAction)
-}
-
-public struct LoadAndNavigateEnvironment {
-  let mainQueue: AnySchedulerOf<DispatchQueue>
-  public init(mainQueue: AnySchedulerOf<DispatchQueue> = .main) {
-    self.mainQueue = mainQueue
+public struct LoadAndNavigate: ReducerProtocol {
+  public struct State: Equatable {
+    var isLoading = false
+    var loaded: Loaded.State?
+    public init() {}
   }
-}
 
-let loadAndNavigateViewReducer = Reducer<LoadAndNavigateState, LoadAndNavigateAction, LoadAndNavigateEnvironment> { state, action , env in
+  public enum Action: Equatable {
+    case buttonPressed
+    case loadingCompleted
+    case didCloseLoaded
+    case loaded(Loaded.Action)
+  }
 
-  switch action {
-  case .buttonPressed:
-    state.isLoading = true
-    return .task {
-      try await env.mainQueue.sleep(for: 1)
-      return .loadingCompleted
+  @Dependency(\.mainQueue) var mainQueue
+
+  public var body: Reduce<State, Action> {
+    Reduce { state, action in
+      switch action {
+      case .buttonPressed:
+        state.isLoading = true
+        return .task {
+          try await mainQueue.sleep(for: 1)
+          return .loadingCompleted
+        }
+
+      case .loadingCompleted:
+        state.isLoading = false
+        state.loaded = Loaded.State()
+        return .none
+
+      case .didCloseLoaded:
+        state.loaded = nil
+        return .none
+
+      case .loaded:
+        return .none
+      }
+    }
+    .ifLet(\.loaded,
+            action: /Action.loaded) {
+      Loaded()
     }
 
-  case .loadingCompleted:
-    state.isLoading = false
-    state.loaded = LoadedState()
-    return .none
-
-  case .didCloseLoaded:
-    state.loaded = nil
-    return .none
-
-  case .loaded:
-    return .none
   }
 
+  public init() {}
 }
-
-public let loadAndNavigateReducer = Reducer<LoadAndNavigateState, LoadAndNavigateAction, LoadAndNavigateEnvironment>
-  .combine(
-    loadedReducer.optional().pullback(state: \.loaded,
-                                      action: /LoadAndNavigateAction.loaded,
-                                      environment: {$0}),
-    loadAndNavigateViewReducer
-  )

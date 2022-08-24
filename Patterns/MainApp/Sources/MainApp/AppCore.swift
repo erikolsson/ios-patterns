@@ -7,53 +7,46 @@
 
 import ComposableArchitecture
 import LoadAndNavigate
-import NavigateAndLoad
 import Downloads
 import Form
 import Common
 
-public struct AppState: Equatable {
-  var loadAndNavigate = LoadAndNavigateState()
-  var navigateAndLoad = NavigateAndLoadState()
-  var cells = DownloadsState()
-  var form = FormState()
+public struct App: ReducerProtocol {
+
+  public struct State: Equatable {
+    var loadAndNavigate = LoadAndNavigate.State()
+    var downloads = Downloads.State()
+    var form = Form.State()
+    public init() {}
+  }
+
+  public enum Action: Equatable {
+    case loadAndNavigate(LoadAndNavigate.Action)
+    case downloads(Downloads.Action)
+    case form(Form.Action)
+  }
+
+  @Dependency(\.mainQueue) var mainQueue
+
+  public var body: Reduce<State, Action> {
+    Scope(state: \.form, action: /Action.form) {
+      Form()
+    }
+
+    Scope(state: \.loadAndNavigate, action: /Action.loadAndNavigate) {
+      LoadAndNavigate()
+    }
+
+    Scope(state: \.downloads, action: /Action.downloads) {
+      Downloads()
+    }
+  }
 
   public init() {}
 }
 
-public enum AppAction: Equatable {
-  case loadAndNavigate(LoadAndNavigateAction)
-  case navigateAndLoad(NavigateAndLoadAction)
-  case downloads(DownloadsAction)
-  case form(FormAction)
-}
-
-public struct AppEnvironment {
-  let mainQueue: AnySchedulerOf<DispatchQueue>
-  public init(mainQueue: AnySchedulerOf<DispatchQueue> = .main) {
-    self.mainQueue = mainQueue
-  }
-}
-
-public let appReducer = Reducer<AppState, AppAction, AppEnvironment>
-  .combine(
-    loadAndNavigateReducer.pullback(state: \.loadAndNavigate,
-                                    action: /AppAction.loadAndNavigate,
-                                    environment: { env in LoadAndNavigateEnvironment(mainQueue: env.mainQueue) }),
-    navigateAndLoadReducer.pullback(state: \.navigateAndLoad,
-                                    action: /AppAction.navigateAndLoad,
-                                    environment: { env in NavigateAndLoadEnvironment(mainQueue: env.mainQueue) }),
-    cellsReducer.pullback(state: \.cells,
-                          action: /AppAction.downloads,
-                          environment: { env in DownloadsEnvironment(mainQueue: env.mainQueue) }),
-    formReducer.pullback(state: \.form,
-                         action: /AppAction.form,
-                         environment: { env in FormEnvironment(mainQueue: env.mainQueue)})
-  )
-
 enum DisplayItem: Hashable, CaseIterable {
   case loadAndNavigate
-  case navigateAndLoad
   case cellStates
   case form
 
@@ -61,9 +54,6 @@ enum DisplayItem: Hashable, CaseIterable {
     switch self {
     case .loadAndNavigate:
       return "Load and navigate"
-
-    case .navigateAndLoad:
-      return "Navigate and load"
 
     case .cellStates:
       return "Cell States Example"
@@ -74,7 +64,7 @@ enum DisplayItem: Hashable, CaseIterable {
   }
 }
 
-extension AppState {
+extension App.State {
 
   var displaySections: [SectionWrapper<Int, DisplayItem>] {
     return [

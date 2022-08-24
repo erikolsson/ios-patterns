@@ -10,7 +10,7 @@ import Common
 import ComposableArchitecture
 import Cartography
 
-class DownloadCell: StoreCell<DownloadState, CellAction> {
+class DownloadCell: StoreCell<Download.State, Download.Action> {
 
   let label = UILabel()
   let downloadButton = UIButton()
@@ -33,7 +33,7 @@ class DownloadCell: StoreCell<DownloadState, CellAction> {
     downloadButton.setTitleColor(.systemPink, for: .normal)
   }
 
-  override func configureStateObservation(on viewStore: ViewStore<DownloadState, CellAction>) {
+  override func configureStateObservation(on viewStore: ViewStore<Download.State, Download.Action>) {
     viewStore.bind(\.title, to: \.text, on: label)
       .store(in: &cancellables)
 
@@ -48,7 +48,7 @@ class DownloadCell: StoreCell<DownloadState, CellAction> {
 
 }
 
-extension DownloadState {
+extension Download.State {
   
   var downloadButtonTitle: String {
     switch progress {

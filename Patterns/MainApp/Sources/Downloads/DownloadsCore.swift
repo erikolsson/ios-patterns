@@ -8,59 +8,57 @@
 import ComposableArchitecture
 import Common
 
-public struct DownloadsState: Equatable {
-  var downloads = IdentifiedArrayOf<DownloadState>()
+public struct Downloads: ReducerProtocol {
+
+  public struct State: Equatable {
+    var downloads = IdentifiedArrayOf<Download.State>()
+    public init() {}
+
+    mutating func addDownload() {
+      let index = downloads.count + 1
+      downloads.append(Download.State(title: "\(index)"))
+    }
+  }
+
+  public enum Action: Equatable {
+    case viewDidLoad
+    case cell(id: Download.State.ID, action: Download.Action)
+  }
+
   public init() {}
 
-  mutating func addDownload() {
-    let index = downloads.count + 1
-    downloads.append(DownloadState(title: "\(index)"))
-  }
-}
+  public var body: Reduce<State, Action> {
+    Reduce { state, action in
+      switch action {
+      case .viewDidLoad:
+        if state.downloads.isEmpty {
+          for _ in 0..<50 {
+            state.addDownload()
+          }
+        }
+        return .none
 
-public enum DownloadsAction: Equatable {
-  case viewDidLoad
-  case cell(id: DownloadState.ID, action: CellAction)
-}
-
-public struct DownloadsEnvironment {
-  let mainQueue: AnySchedulerOf<DispatchQueue>
-  public init(mainQueue: AnySchedulerOf<DispatchQueue> = .main) {
-    self.mainQueue = mainQueue
-  }
-}
-
-let cellsViewReducer = Reducer<DownloadsState, DownloadsAction, DownloadsEnvironment> { state, action, env in
-  switch action {
-  case .viewDidLoad:
-    if state.downloads.isEmpty {
-      for i in 0..<50 {
-        state.addDownload()
+      case .cell:
+        return .none
       }
     }
-    return .none
-
-  case .cell:
-    return .none
+    .forEach(\.downloads,
+              action: /Downloads.Action.cell(id:action:)) {
+      Download()
+    }
   }
-}
 
-public let cellsReducer = Reducer<DownloadsState, DownloadsAction, DownloadsEnvironment>
-  .combine(
-    cellReducer.forEach(state: \.downloads,
-                        action: /DownloadsAction.cell(id:action:),
-                        environment: {$0}),
-    cellsViewReducer
-  )
+}
 
 enum DisplayItem: Hashable {
-  case download(id: DownloadState.ID)
+  case download(id: Download.State.ID)
 }
 
-extension DownloadsState {
+extension Downloads.State {
   var displaySections: [SectionWrapper<Int, DisplayItem>] {
     return [
-      SectionWrapper(sectionIdentifier: 0, items: downloads.ids.elements.map(DisplayItem.download(id:)))
+      SectionWrapper(sectionIdentifier: 0,
+                     items: downloads.ids.elements.map(DisplayItem.download(id:)))
     ]
   }
 }

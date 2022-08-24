@@ -12,7 +12,10 @@ let package = Package(
       targets: ["MainApp"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "0.39.0"),
+    .package(
+      url: "https://github.com/pointfreeco/swift-composable-architecture",
+      branch: "protocol-beta"
+    ),
     .package(url: "https://github.com/robb/Cartography.git", from: "4.0.0"),
   ],
   targets: [
@@ -24,11 +27,6 @@ let package = Package(
             ]),
 
     .target(name: "LoadAndNavigate",
-            dependencies: [
-              "Common"
-            ]),
-
-    .target(name: "NavigateAndLoad",
             dependencies: [
               "Common"
             ]),
@@ -48,7 +46,6 @@ let package = Package(
       dependencies: [
         "Common",
         "LoadAndNavigate",
-        "NavigateAndLoad",
         "Downloads",
         "Form"
       ]),

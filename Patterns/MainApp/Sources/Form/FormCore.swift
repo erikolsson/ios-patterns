@@ -24,35 +24,31 @@ struct UserProfile: Equatable {
   @BindableState var likesHorses: Bool = false
 }
 
-public struct FormState: Equatable {
-  var userProfile = UserProfile()
+public struct Form: ReducerProtocol {
+
+  public struct State: Equatable {
+    var userProfile = UserProfile()
+    public init() {}
+  }
+
+  public enum Action: BindableAction, Equatable {
+    case binding(BindingAction<State>)
+  }
+
+  public var body: Reduce<State, Action> {
+    BindingReducer()
+  }
 
   public init() {}
-}
 
-public enum FormAction: BindableAction, Equatable {
-  case binding(BindingAction<FormState>)
 }
-
-public struct FormEnvironment {
-  let mainQueue: AnySchedulerOf<DispatchQueue>
-  public init(mainQueue: AnySchedulerOf<DispatchQueue> = .main) {
-    self.mainQueue = mainQueue
-  }
-}
-
-public let formReducer = Reducer<FormState, FormAction, FormEnvironment> { state, action, env in
-  print(action)
-  return .none
-}
-  .binding()
 
 enum DisplayItem: Hashable {
-  case string(title: String, keyPath: WritableKeyPath<FormState, BindableState<String>>)
-  case bool(title: String, keyPath: WritableKeyPath<FormState, BindableState<Bool>>)
+  case string(title: String, keyPath: WritableKeyPath<Form.State, BindableState<String>>)
+  case bool(title: String, keyPath: WritableKeyPath<Form.State, BindableState<Bool>>)
 }
 
-extension FormState {
+extension Form.State {
   var displaySections: [SectionWrapper<Int, DisplayItem>] {
     return [
       SectionWrapper(sectionIdentifier: 0,

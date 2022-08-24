@@ -11,7 +11,7 @@ import Cartography
 import ComposableArchitecture
 import Combine
 
-public class DownloadsViewController: StoreViewController<DownloadsState, DownloadsAction> {
+public class DownloadsViewController: StoreViewController<Downloads.State, Downloads.Action> {
 
   typealias SectionWrapperType = SectionWrapper<Int, DisplayItem>
   let collectionView = UICollectionView(frame: .zero,
@@ -26,7 +26,7 @@ public class DownloadsViewController: StoreViewController<DownloadsState, Downlo
     switch itemIdentifier {
     case let .download(id: id):
       cell.configureOptional(with: store.scope(state: \.downloads[id: id],
-                                               action: { DownloadsAction.cell(id: id, action: $0)} ))
+                                               action: { Downloads.Action.cell(id: id, action: $0)} ))
     }
     return cell
   }

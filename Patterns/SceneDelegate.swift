@@ -15,9 +15,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     guard let windowScene = (scene as? UIWindowScene) else { return }
-    let viewController = AppViewController(store: Store(initialState: AppState(),
-                                                        reducer: appReducer,
-                                                        environment: AppEnvironment()))
+    let viewController = AppViewController(store: Store(initialState: App.State(),
+                                                        reducer: App()))
     let window = UIWindow(windowScene: windowScene)
     window.rootViewController = UINavigationController(rootViewController: viewController)
     window.makeKeyAndVisible()

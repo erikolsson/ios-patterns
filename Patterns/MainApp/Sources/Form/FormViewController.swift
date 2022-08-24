@@ -12,7 +12,7 @@ import SwiftUI
 import Combine
 import ComposableArchitecture
 
-public class FormViewController: StoreViewController<FormState, FormAction> {
+public class FormViewController: StoreViewController<Form.State, Form.Action> {
 
   let collectionView = UICollectionView(frame: .zero,
                                         collectionViewLayout: FormViewController.collectionViewLayout())

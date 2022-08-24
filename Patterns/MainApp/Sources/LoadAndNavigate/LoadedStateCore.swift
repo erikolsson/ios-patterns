@@ -7,14 +7,18 @@
 
 import ComposableArchitecture
 
-struct LoadedState: Equatable {
+public struct Loaded: ReducerProtocol {
 
-}
+  public struct State: Equatable {
 
-public enum LoadedAction: Equatable {
+  }
 
-}
+  public enum Action: Equatable {
+    
+  }
 
-let loadedReducer = Reducer<LoadedState, LoadedAction, LoadAndNavigateEnvironment> { _, _, _ in
-  return .none
+  public func reduce(into state: inout State, action: Action) -> Effect<Action, Never> {
+
+  }
+
 }
