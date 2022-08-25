@@ -44,6 +44,8 @@ public struct Download: ReducerProtocol {
         state.progress = .downloading(0)
         return downloadTask(queue: mainQueue.eraseToAnyScheduler(),
                             cancellationID: state.id)
+        .receive(on: mainQueue)
+        .eraseToEffect()
       }
 
     case let .setProgress(progress):
@@ -60,11 +62,16 @@ public struct Download: ReducerProtocol {
       var progress: Double = 0
       while progress < 1.0 {
         progress = min(1.0, progress + 0.01)
+        print(progress)
         await send(.setProgress(.downloading(progress)))
         try await queue.sleep(for: 0.1)
+        if Float.random(in: 0..<1) > 0.95 {
+          await send(.setProgress(.failed))
+          return
+        }
       }
       await send(.setProgress(.finished))
     }
     .cancellable(id: cancellationID)
-    .throttle(id: cancellationID, for: 0.5, scheduler: queue, latest: true)
+    .eraseToEffect()
   }
