@@ -48,6 +48,7 @@ public struct App: ReducerProtocol {
 enum DisplayItem: Hashable, CaseIterable {
   case loadAndNavigate
   case cellStates
+  case cellStatesSwiftUI
   case form
 
   var title: String {
@@ -57,6 +58,9 @@ enum DisplayItem: Hashable, CaseIterable {
 
     case .cellStates:
       return "Cell States Example"
+
+    case .cellStatesSwiftUI:
+      return "Cell States Example (SwiftUI)"
 
     case .form:
       return "Form example"

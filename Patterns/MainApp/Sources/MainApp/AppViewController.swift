@@ -10,7 +10,6 @@ import ComposableArchitecture
 import Common
 import Cartography
 import LoadAndNavigate
-import NavigateAndLoad
 import Downloads
 import Form
 
@@ -62,6 +61,10 @@ extension AppViewController: UICollectionViewDelegate {
                                                           action: App.Action.downloads))
       navigationController?.pushViewController(vc, animated: true)
 
+    case .cellStatesSwiftUI:
+      let vc = DownloadsSwiftUIViewController(store: store.scope(state: \.downloads,
+                                                                 action: App.Action.downloads))
+      navigationController?.pushViewController(vc, animated: true)
     case .form:
       let vc = FormViewController(store: store.scope(state: \.form,
                                                      action: App.Action.form))
