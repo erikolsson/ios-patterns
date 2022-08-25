@@ -56,6 +56,11 @@ extension AppViewController: UICollectionViewDelegate {
                                                                 action: App.Action.loadAndNavigate))
       navigationController?.pushViewController(vc, animated: true)
 
+    case .loadAndNavigateSwiftUI:
+      let vc = LoadAndNavigateSwiftUIViewController(store: store.scope(state: \.loadAndNavigate,
+                                                                       action: App.Action.loadAndNavigate))
+      navigationController?.pushViewController(vc, animated: true)
+
     case .cellStates:
       let vc = DownloadsViewController(store: store.scope(state: \.downloads,
                                                           action: App.Action.downloads))

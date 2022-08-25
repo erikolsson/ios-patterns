@@ -48,10 +48,10 @@ public class DownloadsViewController: StoreViewController<Downloads.State, Downl
 
   static func collectionViewLayout() -> UICollectionViewCompositionalLayout {
     let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                          heightDimension: .absolute(80))
+                                          heightDimension: .absolute(55))
     let item = NSCollectionLayoutItem(layoutSize: itemSize)
     let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                           heightDimension: .absolute(80))
+                                           heightDimension: .absolute(55))
     let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize,
                                                  subitems: [item])
     let section = NSCollectionLayoutSection(group: group)

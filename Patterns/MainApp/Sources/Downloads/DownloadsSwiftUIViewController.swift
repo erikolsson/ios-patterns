@@ -9,7 +9,6 @@ import UIKit
 import SwiftUI
 import ComposableArchitecture
 
-
 public class DownloadsSwiftUIViewController: UIHostingController<DownloadsView> {
 
   public init(store: Store<Downloads.State, Downloads.Action>) {
