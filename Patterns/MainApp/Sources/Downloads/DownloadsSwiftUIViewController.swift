@@ -47,10 +47,14 @@ struct DownloadView: View {
     WithViewStore(store) { viewStore in
       HStack {
         Text(viewStore.title)
+
         Spacer()
         Button(viewStore.downloadButtonTitle) {
           viewStore.send(.startDownload)
         }
+        .transition(.opacity)
+        .animation(.linear, value: viewStore.state)
+
         .buttonStyle(.borderless)
       }
     }

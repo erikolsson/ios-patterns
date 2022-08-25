@@ -50,6 +50,7 @@ enum DisplayItem: Hashable, CaseIterable {
   case cellStates
   case cellStatesSwiftUI
   case form
+  case formSwiftUI
 
   var title: String {
     switch self {
@@ -64,6 +65,10 @@ enum DisplayItem: Hashable, CaseIterable {
 
     case .form:
       return "Form example"
+
+    case .formSwiftUI:
+      return "Form example (SwiftUI)"
+
     }
   }
 }

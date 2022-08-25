@@ -69,6 +69,11 @@ extension AppViewController: UICollectionViewDelegate {
       let vc = FormViewController(store: store.scope(state: \.form,
                                                      action: App.Action.form))
       navigationController?.pushViewController(vc, animated: true)
+
+    case .formSwiftUI:
+      let vc = FormSwiftUIViewController(store: store.scope(state: \.form,
+                                                            action: App.Action.form))
+      navigationController?.pushViewController(vc, animated: true)
     }
   }
 
