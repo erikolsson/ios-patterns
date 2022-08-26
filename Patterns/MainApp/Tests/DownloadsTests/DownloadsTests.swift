@@ -17,6 +17,7 @@ final class DownloadsTests: XCTestCase {
                     reducer: Downloads())
     sut.dependencies.uuid = .incrementing
 
+
     await sut.send(.viewDidLoad) {
       let generateUUID = UUIDGenerator.incrementing
       for _ in 0..<50 {

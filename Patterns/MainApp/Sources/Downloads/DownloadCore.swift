@@ -10,67 +10,43 @@ import ComposableArchitecture
 public struct Download: ReducerProtocol {
 
   public struct State: Equatable, Identifiable {
-    public enum DownloadProgress: Equatable {
-      case idle
-      case failed
-      case downloading(Double)
-      case finished
-    }
-
     public let id: UUID
     let title: String
-    var progress: DownloadProgress = .idle
+    var downloadStatus: SimulatedDownload.Status = .idle
   }
 
   public enum Action: Equatable {
     case startDownload
-    case setProgress(Download.State.DownloadProgress)
+    case setDownloadStatus(SimulatedDownload.Status)
   }
 
   @Dependency(\.mainQueue) var mainQueue
+  @Dependency(\.simulatedDownload) var simulatedDownload
 
   public func reduce(into state: inout State, action: Action) -> Effect<Action, Never> {
     switch action {
     case .startDownload:
 
-      switch state.progress {
+      switch state.downloadStatus {
       case .finished:
         return .none
       case .downloading:
-        state.progress = .idle
+        state.downloadStatus = .idle
         return .cancel(id: state.id)
 
       case .failed, .idle:
-        state.progress = .downloading(0)
-        return downloadTask(queue: mainQueue.eraseToAnyScheduler(),
-                            cancellationID: state.id)
-        .receive(on: mainQueue)
-        .eraseToEffect()
+        state.downloadStatus = .downloading(0)
+        return simulatedDownload.download(mainQueue)
+          .cancellable(id: state.id)
+          .map(Action.setDownloadStatus)
+          .receive(on: mainQueue)
+          .eraseToEffect()
       }
 
-    case let .setProgress(progress):
-      state.progress = progress
+    case let .setDownloadStatus(status):
+      state.downloadStatus = status
       return .none
     }
   }
 
 }
-
-  func downloadTask(queue: AnySchedulerOf<DispatchQueue>,
-                    cancellationID: AnyHashable) -> Effect<Download.Action, Never> {
-    return .run { send in
-      var progress: Double = 0
-      while progress < 1.0 {
-        progress = min(1.0, progress + 0.01)
-        await send(.setProgress(.downloading(progress)))
-        try await queue.sleep(for: 0.1)
-        if Float.random(in: 0..<1) > 0.95 {
-          await send(.setProgress(.failed))
-          return
-        }
-      }
-      await send(.setProgress(.finished))
-    }
-    .cancellable(id: cancellationID)
-    .eraseToEffect()
-  }

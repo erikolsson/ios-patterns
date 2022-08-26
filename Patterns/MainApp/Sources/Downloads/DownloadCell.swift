@@ -51,7 +51,7 @@ class DownloadCell: StoreCell<Download.State, Download.Action> {
 extension Download.State {
   
   var downloadButtonTitle: String {
-    switch progress {
+    switch downloadStatus {
     case .idle:
       return "Download"
     case .failed:
