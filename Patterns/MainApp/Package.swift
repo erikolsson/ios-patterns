@@ -50,6 +50,12 @@ let package = Package(
         "Form"
       ]),
 
+    .testTarget(name: "LoadAndNavigateTests",
+               dependencies: ["LoadAndNavigate"]),
+
+    .testTarget(name: "DownloadsTests",
+               dependencies: ["Downloads"]),
+
     .testTarget(
       name: "MainAppTests",
       dependencies: ["MainApp"]),

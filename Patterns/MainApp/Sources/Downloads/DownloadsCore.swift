@@ -14,9 +14,9 @@ public struct Downloads: ReducerProtocol {
     var downloads = IdentifiedArrayOf<Download.State>()
     public init() {}
 
-    mutating func addDownload() {
+    mutating func addDownload(id: UUID) {
       let index = downloads.count + 1
-      downloads.append(Download.State(title: "\(index)"))
+      downloads.append(Download.State(id: id, title: "\(index)"))
     }
   }
 
@@ -25,6 +25,7 @@ public struct Downloads: ReducerProtocol {
     case cell(id: Download.State.ID, action: Download.Action)
   }
 
+  @Dependency(\.uuid) var generateUUID
   public init() {}
 
   public var body: Reduce<State, Action> {
@@ -33,7 +34,7 @@ public struct Downloads: ReducerProtocol {
       case .viewDidLoad:
         if state.downloads.isEmpty {
           for _ in 0..<50 {
-            state.addDownload()
+            state.addDownload(id: generateUUID())
           }
         }
         return .none

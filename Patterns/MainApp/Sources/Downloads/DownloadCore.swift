@@ -17,7 +17,7 @@ public struct Download: ReducerProtocol {
       case finished
     }
 
-    public let id = UUID()
+    public let id: UUID
     let title: String
     var progress: DownloadProgress = .idle
   }
